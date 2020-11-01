@@ -14,7 +14,7 @@ import (
 
 	"github.com/Unknwon/com"
 	"github.com/pkg/errors"
-	"github.com/rai-project/dlframework/framework/options"
+	"github.com/c3sr/dlframework/framework/options"
 	nvidiasmi "github.com/rai-project/nvidia-smi"
 	"github.com/rai-project/tracer"
 	"gorgonia.org/tensor"

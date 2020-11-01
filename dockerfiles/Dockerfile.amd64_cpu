@@ -1,5 +1,5 @@
-FROM carml/base:amd64-cpu-latest
-MAINTAINER Abdul Dakkak <dakkak@illinois.edu>
+FROM c3sr/base:amd64-cpu-latest
+MAINTAINER Yen-Hsiang Chang <yhchang3@illinois.edu>
 
 # Build-time metadata as defined at http://label-schema.org
 ARG BUILD_DATE
@@ -61,33 +61,33 @@ RUN apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/*
 ENV PYTORCH_DIST_DIR /opt/libtorch
 ARG BRANCH=v1.3.0
 
-RUN git clone --single-branch --depth=1 --recurse-submodules --branch=${BRANCH} https://github.com/pytorch/pytorch.git && cd pytorch && \
-  git submodule update --init && \
-  mkdir build && cd build && \
-  cmake .. \
-  -DCMAKE_INSTALL_PREFIX=$PYTORCH_DIST_DIR \
-  -DBUILD_TORCH=ON \
-  -DBUILD_SHARED_LIBS=ON \
-  -DCMAKE_CXX_FLAGS="-D_GLIBCXX_USE_CXX11_ABI=1" \
-  -DUSE_OBSERVERS=ON \
-  -DUSE_PROF=ON \
-  -DBLAS=OpenBLAS \
-  -DBUILD_CUSTOM_PROTOBUF=ON \
-  -DBUILD_PYTHON=ON \
-  -DUSE_NATIVE_ARCH=ON \
-  -DUSE_NNPACK=ON \
-  -DUSE_OPENCV=OFF \
-  -DUSE_MKL=OFF \
-  -DUSE_DISTRIBUTED=OFF \
-  -DUSE_ROCKSDB=OFF \
-  -DUSE_GLOO=OFF \
-  -DUSE_NCCL=OFF \
-  -DUSE_CUDA=OFF \
-  && make -j$(nproc) install \
-  && ldconfig \
-  && make clean \
-  && cd .. \
-  && rm -rf build
+#RUN git clone --single-branch --depth=1 --recurse-submodules --branch=${BRANCH} https://github.com/pytorch/pytorch.git && cd pytorch && \
+#  git submodule update --init && \
+#  mkdir build && cd build && \
+#  cmake .. \
+#  -DCMAKE_INSTALL_PREFIX=$PYTORCH_DIST_DIR \
+#  -DBUILD_TORCH=ON \
+#  -DBUILD_SHARED_LIBS=ON \
+#  -DCMAKE_CXX_FLAGS="-D_GLIBCXX_USE_CXX11_ABI=1" \
+#  -DUSE_OBSERVERS=ON \
+#  -DUSE_PROF=ON \
+#  -DBLAS=OpenBLAS \
+#  -DBUILD_CUSTOM_PROTOBUF=ON \
+#  -DBUILD_PYTHON=ON \
+#  -DUSE_NATIVE_ARCH=ON \
+#  -DUSE_NNPACK=ON \
+#  -DUSE_OPENCV=OFF \
+#  -DUSE_MKL=OFF \
+#  -DUSE_DISTRIBUTED=OFF \
+#  -DUSE_ROCKSDB=OFF \
+#  -DUSE_GLOO=OFF \
+#  -DUSE_NCCL=OFF \
+#  -DUSE_CUDA=OFF \
+#  && make -j$(nproc) install \
+#  && ldconfig \
+#  && make clean \
+#  && cd .. \
+#  && rm -rf build
 
 ### Built-in method to build custom libtorch
 #RUN git clone --single-branch --depth=1 --recurse-submodules --branch=$FRAMEWORK_VERSION  https://github.com/pytorch/pytorch.git && cd pytorch && \
@@ -99,17 +99,22 @@ RUN git clone --single-branch --depth=1 --recurse-submodules --branch=${BRANCH} 
 #  ls -l && \
 #  ls -l ./lib && \
  
+### Get prebuilt library
+RUN wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.3.0%2Bcpu.zip && \
+    unzip libtorch-cxx11-abi-shared-with-deps-1.3.0+cpu.zip && \
+    rm libtorch-cxx11-abi-shared-with-deps-1.3.0+cpu.zip 
+
 RUN echo "$PYTORCH_DIST_DIR/lib" >> /etc/ld.so.conf.d/libtorch.conf && ldconfig
 ENV LD_LIBRARY_PATH /opt/libtorch/lib:${LD_LIBRARY_PATH}
 
 ########## GO BINDING INSTALLATION ###################
-ENV PKG github.com/rai-project/go-pytorch
+ENV PKG github.com/c3sr/go-pytorch
 WORKDIR $GOPATH/src/$PKG
 
 RUN git clone --depth=1 --single-branch --branch=master  https://${PKG}.git .
 
 RUN dep ensure -v -no-vendor -update \
-    github.com/rai-project/dlframework && \
+    github.com/c3sr/dlframework && \
     dep ensure -v -vendor-only
 
 RUN go install -a -tags=nogpu -installsuffix cgo -ldflags "-s -w -X ${PKG}/Version=${VERSION} -X ${PKG}/GitCommit=${VCS_REF} -X ${PKG}/BuildDate=${BUILD_DATE}"&& \

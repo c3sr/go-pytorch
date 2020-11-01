@@ -93,7 +93,7 @@ RUN git clone --single-branch --depth=1 --recurse-submodules --branch=master htt
 RUN echo "$PYTORCH_DIST_DIR/lib" >> /etc/ld.so.conf.d/libtorch.conf && ldconfig
 
 ########## GO BINDING INSTALLATION ###################
-ENV PKG github.com/rai-project/go-pytorch
+ENV PKG github.com/c3sr/go-pytorch
 WORKDIR $GOPATH/src/$PKG
 
 RUN git clone --depth=1 --single-branch --branch=master https://${PKG}.git . && \

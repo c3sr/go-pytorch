@@ -1,21 +1,17 @@
 # go-pytorch
 
-[![Build Status](https://dev.azure.com/dakkak/rai/_apis/build/status/rai-project.go-pytorch)](https://dev.azure.com/dakkak/rai/_build/latest?definitionId=10)
-[![Build Status](https://travis-ci.org/rai-project/go-pytorch.svg?branch=master)](https://travis-ci.org/rai-project/go-pytorch)
-[![Go Report Card](https://goreportcard.com/badge/github.com/rai-project/go-mxnet)](https://goreportcard.com/report/github.com/rai-project/go-pytorch)
+[![Go Report Card](https://goreportcard.com/badge/github.com/c3sr/go-pytorch)](https://goreportcard.com/report/github.com/c3sr/go-pytorch)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-[![](https://images.microbadger.com/badges/version/carml/go-pytorch:ppc64le-gpu-latest.svg)](https://microbadger.com/images/carml/go-pytorch:ppc64le-gpu-latest> 'Get your own version badge on microbadger.com') [![](https://images.microbadger.com/badges/version/carml/go-pytorch:ppc64le-cpu-latest.svg)](https://microbadger.com/images/carml/go-pytorch:ppc64le-cpu-latest 'Get your own version badge on microbadger.com') [![](https://images.microbadger.com/badges/version/carml/go-pytorch:amd64-cpu-latest.svg)](https://microbadger.com/images/carml/go-pytorch:amd64-cpu-latest 'Get your own version badge on microbadger.com') [![](https://images.microbadger.com/badges/version/carml/go-pytorch:amd64-gpu-latest.svg)](https://microbadger.com/images/carml/go-pytorch:amd64-gpu-latest 'Get your own version badge on microbadger.com')
-
 Go binding for Pytorch C++ API.
-This is used by the [Pytorch agent](https://github.com/rai-project/pytorch) in [MLModelScope](mlmodelscope.org) to perform model inference in Go.
+This is used by the [Pytorch agent](https://github.com/c3sr/pytorch) in [MLModelScope](mlmodelscope.org) to perform model inference in Go.
 
 ## Installation
 
 Download and install go-pytorch:
 
 ```
-go get -v github.com/rai-project/go-pytorch
+go get -v github.com/c3sr/go-pytorch
 ```
 
 The binding requires Pytorch C++ (libtorch) and other Go packages.
@@ -60,7 +56,7 @@ For example,
 You can install the dependency through `go get`.
 
 ```
-cd $GOPATH/src/github.com/rai-project/go-pytorch
+cd $GOPATH/src/github.com/c3sr/go-pytorch
 go get -u -v ./...
 ```
 

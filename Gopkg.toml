@@ -46,7 +46,7 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/rai-project/dlframework"
+  name = "github.com/c3sr/dlframework"
 
 [[constraint]]
   branch = "master"
