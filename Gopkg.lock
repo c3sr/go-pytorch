@@ -143,6 +143,18 @@
   revision = "9fd32a8b3d3d3f9d43c341bfe098430e07609480"
 
 [[projects]]
+  branch = "master"
+  digest = "0:"
+  name = "github.com/c3sr/dlframework"
+  packages = [
+    ".",
+    "framework/feature",
+    "framework/options",
+  ]
+  pruneopts = "T"
+  revision = "cf61ba27630e2df7278f362906d8b4cf0ce9f32e"
+
+[[projects]]
   digest = "1:4e6fa73b0ca03165ff5f6f07464b5b1a83568f027d1a9eccde120c554e43e6b8"
   name = "github.com/cheekybits/genny"
   packages = ["generic"]
@@ -572,18 +584,6 @@
   packages = ["."]
   pruneopts = "T"
   revision = "3bd01e698aad9bbfa8efa27dc763ba1d38ccaa91"
-
-[[projects]]
-  branch = "master"
-  digest = "0:"
-  name = "github.com/rai-project/dlframework"
-  packages = [
-    ".",
-    "framework/feature",
-    "framework/options",
-  ]
-  pruneopts = "T"
-  revision = "4aaa12cfa5874a785cbe70a2bc8a849472c7bc95"
 
 [[projects]]
   branch = "master"
@@ -1229,13 +1229,13 @@
     "github.com/anthonynsimon/bild/imgio",
     "github.com/anthonynsimon/bild/transform",
     "github.com/benesch/cgosymbolizer",
+    "github.com/c3sr/dlframework",
+    "github.com/c3sr/dlframework/framework/feature",
+    "github.com/c3sr/dlframework/framework/options",
     "github.com/k0kubun/pp",
     "github.com/opentracing/opentracing-go",
     "github.com/pkg/errors",
     "github.com/rai-project/config",
-    "github.com/rai-project/dlframework",
-    "github.com/rai-project/dlframework/framework/feature",
-    "github.com/rai-project/dlframework/framework/options",
     "github.com/rai-project/downloadmanager",
     "github.com/rai-project/go-cupti",
     "github.com/rai-project/logger",
