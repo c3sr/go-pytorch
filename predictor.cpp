@@ -53,6 +53,7 @@ Predictor::Predictor(const string &model_file, Torch_DeviceKind device) {
 }
 
 void Predictor::Predict(Torch_TensorContext *cInputs, int inputLength) {
+  torch::NoGradGuard no_grad_guard;
   std::vector<torch::jit::IValue> inputs{};
 
   for (int ii = 0; ii < inputLength; ii++) {
