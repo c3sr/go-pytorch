@@ -109,6 +109,10 @@ RUN wget https://download.pytorch.org/libtorch/cu101/libtorch-cxx11-abi-shared-w
 RUN echo "$PYTORCH_DIST_DIR/lib" >> /etc/ld.so.conf.d/libtorch.conf && ldconfig
 ENV LD_LIBRARY_PATH /opt/libtorch/lib:${LD_LIBRARY_PATH}
 
+### Handle libtorch issue
+# Refer to https://github.com/pytorch/pytorch/issues/27971 for more info
+ENV LRU_CACHE_CAPACITY=1
+
 ########## GO BINDING INSTALLATION ###################
 ENV PKG github.com/c3sr/go-pytorch
 WORKDIR $GOPATH/src/$PKG

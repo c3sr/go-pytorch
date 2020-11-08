@@ -21,6 +21,8 @@ The binding requires Pytorch C++ (libtorch) and other Go packages.
 
 The Pytorch C++ library is expected to be under `/opt/libtorch`.
 
+The binding is built using libtorch 1.3.0.
+
 To install Pytorch C++ on your system, you can
 
 1. download pre-built binary from [Pytorch website](https://pytorch.org): Choose `Pytorch Build = Stable (1.3)`, `Your OS = <fill>`, `Package = LibTorch`, `Language = C++` and `CUDA = <fill>`. Then download `cxx11 ABI` version. Unzip the packaged directory and copy to `/opt/libtorch` (or modify the corresponding `CFLAGS` and `LDFLAGS` paths if using a custom location).
@@ -52,6 +54,9 @@ For example,
     export CGO_CXXFLAGS="${CGO_CXXFLAGS} -I/tmp/libtorch/include"
     export CGO_LDFLAGS="${CGO_LDFLAGS} -L/tmp/libtorch/lib"
 ```
+
+There is [an issue](https://github.com/pytorch/pytorch/issues/27971) when using libtorch with version < 1.6.0, the work around here is to set `LRU_CACHE_CAPACITY=1` in the environmental variable.
+
 ### Go Packages
 
 You can install the dependency through `go get`.
