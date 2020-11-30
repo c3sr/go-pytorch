@@ -16,18 +16,18 @@ import (
 	"github.com/anthonynsimon/bild/imgio"
 	"github.com/anthonynsimon/bild/transform"
 	"github.com/k0kubun/pp"
-	"github.com/rai-project/config"
+	"github.com/c3sr/config"
 	"github.com/c3sr/dlframework"
 	"github.com/c3sr/dlframework/framework/feature"
 	"github.com/c3sr/dlframework/framework/options"
-	"github.com/rai-project/downloadmanager"
+	"github.com/c3sr/downloadmanager"
 	"github.com/c3sr/go-pytorch"
 	"gorgonia.org/tensor"
 
-	cupti "github.com/rai-project/go-cupti"
-	nvidiasmi "github.com/rai-project/nvidia-smi"
-	"github.com/rai-project/tracer"
-	_ "github.com/rai-project/tracer/all"
+	cupti "github.com/c3sr/go-cupti"
+	nvidiasmi "github.com/c3sr/nvidia-smi"
+	"github.com/c3sr/tracer"
+	_ "github.com/c3sr/tracer/all"
 )
 
 var (

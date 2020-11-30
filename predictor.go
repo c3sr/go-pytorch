@@ -17,9 +17,9 @@ import (
 	"github.com/k0kubun/pp"
 	"github.com/pkg/errors"
 	"github.com/c3sr/dlframework/framework/options"
-	cupti "github.com/rai-project/go-cupti"
-	nvidiasmi "github.com/rai-project/nvidia-smi"
-	"github.com/rai-project/tracer"
+	cupti "github.com/c3sr/go-cupti"
+	nvidiasmi "github.com/c3sr/nvidia-smi"
+	"github.com/c3sr/tracer"
 	"gorgonia.org/tensor"
 )
 
