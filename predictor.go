@@ -13,8 +13,8 @@ import (
 	"strings"
 	"unsafe"
 
-	"github.com/Unknwon/com"
-	"github.com/k0kubun/pp"
+	"github.com/unknwon/com"
+	"github.com/k0kubun/pp/v3"
 	"github.com/pkg/errors"
 	"github.com/c3sr/dlframework/framework/options"
 	cupti "github.com/c3sr/go-cupti"
