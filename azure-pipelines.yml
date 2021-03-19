@@ -1,21 +1,23 @@
-# 
-# variables:
-#   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
-# 
-# jobs:
-#   - job: CPU
-#     timeoutInMinutes: 0
-#     steps:
-#       - script: docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
-#         condition: eq(variables.isMain, true)
-#       - script: make docker_build_cpu
+
+variables:
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+
+jobs:
+  - job: CPU
+    timeoutInMinutes: 0
+    steps:
+      - script: echo "Skip Test..."
+#      - script: docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
+#        condition: eq(variables.isMain, true)
+#      - script: make docker_build_cpu
+#        workingDirectory: dockerfiles
+#      - script: ./push.sh docker_push_cpu
 #         workingDirectory: dockerfiles
-#       - script: ./push.sh docker_push_cpu
-#         workingDirectory: dockerfiles
 #         condition: eq(variables.isMain, true)
-#   - job: GPU
-#     timeoutInMinutes: 0
-#     steps:
+  - job: GPU
+    timeoutInMinutes: 0
+    steps:
+      - script: echo "Skip Test..."
 #       - script: docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
 #         condition: eq(variables.isMain, true)
 #       - script: make docker_build_gpu
