@@ -1,0 +1,10 @@
+language: go
+jobs:
+  include:
+    - go: 1.15
+os: linux
+dist: xenial
+install:
+  - go build -tags=nogpu ./...
+script: true
+after_script: true
