@@ -1,0 +1,62 @@
+FROM c3sr/base:amd64-gpu-go1.15-cuda11.2-latest
+MAINTAINER Yen-Hsiang Chang <yhchang3@illinois.edu>
+
+# Build-time metadata as defined at http://label-schema.org
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VCS_URL
+ARG VERSION
+ARG ARCH
+ARG PYTORCH_VERSION
+
+LABEL org.carml.go-pytorch.build-date=$BUILD_DATE \
+  org.carml.go-pytorch.name="go-pytorch bindings for go" \
+  org.carml.go-pytorch.description="" \
+  org.carml.go-pytorch.url="https://www.mlmodelscope.org/" \
+  org.carml.go-pytorch.vcs-ref=$VCS_REF \
+  org.carml.go-pytorch.vcs-url=$VCS_URL \
+  org.carml.go-pytorch.vendor="MLModelScope" \
+  org.carml.go-pytorch.arch=$ARCH \
+  org.carml.go-pytorch.version=$VERSION \
+  org.carml.go-pytorch.framework_version=$PYTORCH_VERSION \
+  org.carml.go-pytorch.schema-version="1.0"
+
+########## DEPENDENCIES INSTALLATION ###################
+RUN apt update && apt install -y --no-install-recommends \
+  python3-dev \
+  python3-pip \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install typing_extensions pyyaml dataclasses
+
+########## LIBRARY INSTALLATION ###################
+WORKDIR /
+
+RUN git clone --single-branch --depth=1 --recurse-submodules --branch=v$PYTORCH_VERSION https://github.com/pytorch/pytorch.git && cd pytorch && \
+  git submodule update --init && \
+  mkdir pytorch-build && cd pytorch-build && \
+  cmake .. \
+  -DCMAKE_INSTALL_PREFIX=${FRAMEWORKS_DIR}/libtorch \
+  -DPYTHON_EXECUTABLE:PATH=`which python3` \
+  -DBUILD_SHARED_LIBS=ON \
+  -DCMAKE_CXX_FLAGS="-D_GLIBCXX_USE_CXX11_ABI=1" \
+  -DBLAS=OpenBLAS \
+  -DUSE_PROF=ON \
+  -DUSE_CUDA=ON \
+  -DUSE_CUDNN=ON \
+  -DTORCH_CUDA_ARCH_LIST="7.0 7.5 8.6" \
+  && cmake --build . --target install
+
+RUN rm -fr pytorch
+
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:${FRAMEWORKS_DIR}/libtorch/lib
+ENV LIBRARY_PATH $LIBRARY_PATH:${FRAMEWORKS_DIR}/libtorch/lib
+
+########## GO BINDING INSTALLATION ###################
+ENV PKG github.com/c3sr/go-pytorch
+WORKDIR /c3sr/go-pytorch
+
+RUN git clone --depth=1 --branch=master  https://${PKG}.git .
+
+RUN go install -a -installsuffix cgo -ldflags "-s -w -X ${PKG}/Version=${VERSION} -X ${PKG}/GitCommit=${VCS_REF} -X ${PKG}/BuildDate=${BUILD_DATE}"
+
