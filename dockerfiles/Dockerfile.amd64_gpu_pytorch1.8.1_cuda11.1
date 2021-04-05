@@ -25,6 +25,9 @@ LABEL org.carml.go-pytorch.build-date=$BUILD_DATE \
 RUN apt update && apt install -y --no-install-recommends \
   python3-dev \
   python3-pip \
+  python3-numpy \
+  ninja-build \
+  libgoogle-glog-dev \
   && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install typing_extensions pyyaml dataclasses
@@ -45,7 +48,9 @@ RUN git clone --single-branch --depth=1 --recurse-submodules --branch=v$PYTORCH_
   -DUSE_CUDA=ON \
   -DUSE_CUDNN=ON \
   -DTORCH_CUDA_ARCH_LIST="7.0 7.5 8.6" \
-  && cmake --build . --target install
+  -GNinja \
+  && ninja -v \
+  && ninja install
 
 RUN rm -fr pytorch
 
