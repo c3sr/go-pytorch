@@ -168,11 +168,14 @@ github.com/c3sr/dlframework v1.0.0 h1:JGAmZQIIjXHgWXL+U5K7Ju3Uy/3HRJlkHARl5ym6b6
 github.com/c3sr/dlframework v1.0.0/go.mod h1:PZ2un78sTOGeu8+kMmDKNYEA5d7XKhQoZDAjkB/dou4=
 github.com/c3sr/dlframework v1.0.1 h1:dSO1x9NWQKwQmpxDRe6u4D62nD4QWghbyp+3PfjA6Kg=
 github.com/c3sr/dlframework v1.0.1/go.mod h1:ztNqpWuH9Z0CmryNCGiTTALVWfLhzXI1d7d8xp48cn0=
+github.com/c3sr/dlframework v1.2.2 h1:zyIhEVKVSxBX2mBBoWULcoug8rNt+VwOUWKKCe6DvtU=
+github.com/c3sr/dlframework v1.2.2/go.mod h1:0JeraG4b0xvgyd0EkMn44zwcR3LyaX6xkSi3MTg4X40=
 github.com/c3sr/downloadmanager v1.0.0 h1:iyrfSy4k8N514LyW/IPhmt1M3lC6tSRB5VX9Dv18g1k=
 github.com/c3sr/downloadmanager v1.0.0/go.mod h1:YqQ+Ps7QIjsu0vZ5DQekJfsZ5ferSd1r4Rr4wG6RmwI=
 github.com/c3sr/go-cupti v1.0.1 h1:TW4U/uhw/kdTw+cMs5Yf/QmZVB8hS096hWLWybYddps=
 github.com/c3sr/go-cupti v1.0.1/go.mod h1:Rtvs8Llguhs70qohmGj2Ej+SKT+lQ4L34h5vbSQZZW0=
 github.com/c3sr/go-libjpeg v1.0.0/go.mod h1:PXgijZrloxWoBavtXsIeRBR37r6LXA7RN0N51EnPgtU=
+github.com/c3sr/go-python3 v0.0.0-20210424014611-ae173b2e6908/go.mod h1:6rv4k8m/sCXIMEXPHGC5hG1Cgsl/mylZ5rbdhVfaoGQ=
 github.com/c3sr/grpc v1.0.0/go.mod h1:odSfiDfxpwmzRVgl1dodi8e8ZObNqbddBXK4zgrDVgI=
 github.com/c3sr/image v1.0.0/go.mod h1:NM82s6vaB2b9urcBJXx6Pdm6jFicfhBF3RM8b5ie8Ac=
 github.com/c3sr/joefriday v1.0.0/go.mod h1:eEsmYG6VCsq7//Y65PEEuuFm5Y4FMJ6GvkkPOyAfyfw=
