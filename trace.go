@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/c3sr/tracer"
+	opentracing "github.com/opentracing/opentracing-go"
 )
 
 type TraceEvent struct {

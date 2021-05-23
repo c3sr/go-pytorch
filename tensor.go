@@ -83,7 +83,7 @@ func (t *Tensor) Value() interface{} {
 
 // Shape returns tensors shape
 func (t *Tensor) Shape() []int64 {
-	var size C.ulong
+	var size C.int64_t
 	shape := C.Torch_TensorShape(t.context, &size)
 	slice := (*[1 << 30]int64)(unsafe.Pointer(shape))[:size:size]
 	return slice

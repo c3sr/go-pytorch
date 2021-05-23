@@ -21,7 +21,7 @@ require (
 	github.com/c3sr/cmd v1.0.0 // indirect
 	github.com/c3sr/config v1.0.1
 	github.com/c3sr/database v1.0.0 // indirect
-	github.com/c3sr/dlframework v1.2.2
+	github.com/c3sr/dlframework v1.3.1
 	github.com/c3sr/downloadmanager v1.0.0
 	github.com/c3sr/go-cupti v1.0.1
 	github.com/c3sr/grpc v1.0.0 // indirect

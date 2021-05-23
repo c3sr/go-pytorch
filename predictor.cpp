@@ -1,11 +1,9 @@
 #include "error.hpp"
 #include "predictor.hpp"
-#include "profiler.hpp"
-#include "timer.h"
-#include "timer.impl.hpp"
 
 #include <algorithm>
 #include <chrono>
+#include <cstdio>
 #include <iosfwd>
 #include <iostream>
 #include <memory>
@@ -33,7 +31,6 @@ class Predictor {
   torch::IValue output_;
   torch::DeviceType mode_{torch::kCPU};
 
-  profile *prof_{nullptr};
   std::string profile_filename_{"profile.trace"};
   bool profile_enabled_{false};
   int64_t profile_start_;
@@ -87,8 +84,6 @@ Torch_PredictorContext Torch_NewPredictor(const char *model_file, Torch_DeviceKi
   END_HANDLE_TH_ERRORS(Torch_GlobalError, (Torch_PredictorContext)0);
 }
 
-void InitPytorch() {}
-
 void Torch_PredictorRun(Torch_PredictorContext pred, Torch_TensorContext *cInputs, int inputLength) {
   HANDLE_TH_ERRORS(Torch_GlobalError);
   auto predictor = (Predictor *)pred;
@@ -134,69 +129,19 @@ void Torch_PredictorDelete(Torch_PredictorContext pred) {
   if (predictor == nullptr) {
     return;
   }
-  if (predictor->prof_) {
-    predictor->prof_->reset();
-    delete predictor->prof_;
-    predictor->prof_ = nullptr;
+
+  if (predictor -> profile_enabled_) {
+    remove("profile.trace");
   }
+
   delete predictor;
   END_HANDLE_TH_ERRORS(Torch_GlobalError, );
-}
-
-void Torch_ProfilingStart(Torch_PredictorContext pred, const char *name, const char *metadata) {
-  auto predictor = (Predictor *)pred;
-  if (predictor == nullptr) {
-    return;
-  }
-  if (name == nullptr) {
-    name = "";
-  }
-  if (metadata == nullptr) {
-    metadata = "";
-  }
-  if (predictor->prof_ == nullptr) {
-    predictor->prof_ = new profile(name, metadata);
-  } else {
-    predictor->prof_->reset();
-  }
-}
-
-void Torch_ProfilingEnd(Torch_PredictorContext pred) {
-  auto predictor = (Predictor *)pred;
-  if (predictor == nullptr) {
-    return;
-  }
-  if (predictor->prof_) {
-    predictor->prof_->end();
-  }
-}
-
-void Torch_ProfilingEnable(Torch_PredictorContext pred) {
-  auto predictor = (Predictor *)pred;
-  if (predictor == nullptr) {
-    return;
-  }
-  predictor->profile_enabled_ = true;
-}
-
-void Torch_ProfilingDisable(Torch_PredictorContext pred) {
-  auto predictor = (Predictor *)pred;
-  if (predictor == nullptr) {
-    return;
-  }
-  if (predictor->prof_) {
-    predictor->prof_->reset();
-  }
-  predictor->profile_enabled_ = false;
 }
 
 char *Torch_ProfilingRead(Torch_PredictorContext pred) {
   HANDLE_TH_ERRORS(Torch_GlobalError);
   auto predictor = (Predictor *)pred;
   if (predictor == nullptr) {
-    return strdup("");
-  }
-  if (predictor->prof_ == nullptr) {
     return strdup("");
   }
   
