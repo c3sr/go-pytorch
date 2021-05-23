@@ -87,9 +87,9 @@ Torch_IValue Torch_ConvertIValueToTorchIValue(torch::IValue value) {
     auto tensor = new Torch_Tensor();
     tensor->tensor = value.toTensor();
 
-  if (tensor->tensor.is_cuda()) {
-    tensor->tensor = tensor->tensor.to(at::kCPU);
-  }
+    if (tensor->tensor.is_cuda()) {
+      tensor->tensor = tensor->tensor.to(at::kCPU);
+    }
     return Torch_IValue{
         .itype = Torch_IValueTypeTensor,
         .data_ptr = tensor,
@@ -141,8 +141,6 @@ Torch_TensorContext Torch_NewTensor(void* input_data, int64_t* dimensions, int n
   std::vector<int64_t> sizes;
   sizes.assign(dimensions, dimensions + n_dim);
 
-  //options = options.device(torch::kCPU, 0);
-
   torch::Tensor ten = torch::from_blob(input_data, torch::IntArrayRef(sizes), options);
 
   if (device == CUDA_DEVICE_KIND) {
@@ -170,7 +168,7 @@ Torch_DataType Torch_TensorType(Torch_TensorContext ctx) {
   return Torch_ConvertScalarTypeToDataType(type);
 }
 
-int64_t* Torch_TensorShape(Torch_TensorContext ctx, size_t* dims) {
+int64_t* Torch_TensorShape(Torch_TensorContext ctx, int64_t* dims) {
   auto tensor = reinterpret_cast<Torch_Tensor*>(ctx)->tensor;
   auto sizes = tensor.sizes();
   *dims = sizes.size();

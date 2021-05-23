@@ -13,13 +13,12 @@ import (
 	"strings"
 	"unsafe"
 
-	"github.com/unknwon/com"
-	"github.com/k0kubun/pp/v3"
-	"github.com/pkg/errors"
 	"github.com/c3sr/dlframework/framework/options"
 	cupti "github.com/c3sr/go-cupti"
 	nvidiasmi "github.com/c3sr/nvidia-smi"
 	"github.com/c3sr/tracer"
+	"github.com/pkg/errors"
+	"github.com/unknwon/com"
 	"gorgonia.org/tensor"
 )
 
@@ -98,30 +97,19 @@ func (p *Predictor) Predict(ctx context.Context, inputs []tensor.Tensor) error {
 	defer predictSpan.Finish()
 
 	if p.options.TraceLevel() >= tracer.FRAMEWORK_TRACE {
-		p.EnableProfiling()
-		err := p.StartProfiling("pytorch", "predict")
-		if err != nil {
-			log.WithError(err).WithField("framework", "pytorch").Error("unable to start framework profiling")
-		} else {
-			defer func() {
-				p.EndProfiling()
+		defer func() {
+			start_time := int64(C.Torch_ProfilingGetStartTime(p.ctx))
 
-				start_time := int64(C.Torch_ProfilingGetStartTime(p.ctx))
-
-				profBuffer, err := p.ReadProfile()
-				if err != nil {
-					pp.Println(err)
-					return
-				}
-				t, err := NewTrace(profBuffer, start_time)
-				if err != nil {
-					panic(err)
-					return
-				}
-				t.Publish(ctx, tracer.FRAMEWORK_TRACE)
-				p.DisableProfiling()
-			}()
-		}
+			profBuffer, err := p.ReadProfile()
+			if err != nil {
+				panic(err)
+			}
+			t, err := NewTrace(profBuffer, start_time)
+			if err != nil {
+				panic(err)
+			}
+			t.Publish(ctx, tracer.FRAMEWORK_TRACE)
+		}()
 	}
 
 	err := p.cuptiStart(ctx)
@@ -202,8 +190,4 @@ func (p *Predictor) cuptiClose() {
 	p.cu.Wait()
 	p.cu.Close()
 	p.cu = nil
-}
-
-func init() {
-	C.InitPytorch()
 }

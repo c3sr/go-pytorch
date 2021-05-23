@@ -9,23 +9,17 @@ This is used by the [Pytorch agent](https://github.com/c3sr/pytorch) in [MLModel
 
 ## Installation
 
-Download and install go-pytorch:
-
-```
-go get -v github.com/c3sr/go-pytorch
-```
-
 The binding requires Pytorch C++ (libtorch) and other Go packages.
 
 ### Pytorch C++ (libtorch) Library
 
 The Pytorch C++ library is expected to be under `/opt/libtorch`.
 
-The binding is built using libtorch 1.3.0.
+The binding is built using libtorch 1.7.1.
 
 To install Pytorch C++ on your system, you can
 
-1. download pre-built binary from [Pytorch website](https://pytorch.org): Choose `Pytorch Build = Stable (1.3)`, `Your OS = <fill>`, `Package = LibTorch`, `Language = C++` and `CUDA = <fill>`. Then download `cxx11 ABI` version. Unzip the packaged directory and copy to `/opt/libtorch` (or modify the corresponding `CFLAGS` and `LDFLAGS` paths if using a custom location).
+1. download pre-built binary from [Pytorch website](https://pytorch.org): Choose `Pytorch Build = Stable`, `Your OS = <fill>`, `Package = LibTorch`, `Language = C++` and `CUDA = <fill>`. Then download `cxx11 ABI` version. Unzip the packaged directory and copy to `/opt/libtorch` (or modify the corresponding `CFLAGS` and `LDFLAGS` paths if using a custom location).
 
 2. build it from source: Refer to our [scripts](scripts) or the `LIBRARY INSTALLATION` section in the [dockefiles](dockerfiles).
 
@@ -57,23 +51,6 @@ For example,
 
 There is [an issue](https://github.com/pytorch/pytorch/issues/27971) when using libtorch with version < 1.6.0, the work around here is to set `LRU_CACHE_CAPACITY=1` in the environmental variable.
 
-### Go Packages
-
-You can install the dependency through `go get`.
-
-```
-cd $GOPATH/src/github.com/c3sr/go-pytorch
-go get -u -v ./...
-```
-
-Or use [Dep](https://github.com/golang/dep).
-
-```
-dep ensure -v
-```
-
-This installs the dependency in `vendor/`.
-
 ### Configure Environmental Variables
 
 Configure the linker environmental variables since the Pytorch C++ library is under a non-system directory. Place the following in either your `~/.bashrc` or `~/.zshrc` file
@@ -81,19 +58,19 @@ Configure the linker environmental variables since the Pytorch C++ library is un
 Linux
 ```
 export LIBRARY_PATH=$LIBRARY_PATH:/opt/libtorch/lib
-export LD_LIBRARY_PATH=/opt/libtorch/lib:$DYLD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/opt/libtorch/lib
 
 ```
 
 macOS
 ```
 export LIBRARY_PATH=$LIBRARY_PATH:/opt/libtorch/lib
-export DYLD_LIBRARY_PATH=/opt/libtorch/lib:$DYLD_LIBRARY_PATH
+export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/opt/libtorch/lib
 ```
 ## Check the Build
 
-Run `go build` in to check the dependences installation and library paths set-up.
-On linux, the default is to use GPU, if you don't have a GPU, do `go build -tags nogpu` instead of `go build`.
+Run `go build` to check the dependences installation and library paths set-up.
+On linux, the default is to use GPU, if you don't have a GPU, do `go build -tags=nogpu` instead of `go build`.
 
 **_Note_** : The CGO interface passes go pointers to the C API. This is an error by the CGO runtime. Disable the error by placing
 
@@ -102,38 +79,6 @@ export GODEBUG=cgocheck=0
 ```
 
 in your `~/.bashrc` or `~/.zshrc` file and then run either `source ~/.bashrc` or `source ~/.zshrc`
-
-## Examples
-
-Examples of using the Go Pytorch binding to do model inference are under [examples](examples)
-
-### batch_mlmodelscope
-
-This example shows how to use the MLModelScope tracer to profile the inference.
-
-Refer to [Set up the external services](https://docs.mlmodelscope.org/installation/source/external_services/) to start the tracer.
-
-Then run the example by
-
-```
-  cd example/batch_mlmodelscope
-  go build
-  ./batch
-```
-
-Now you can go to `localhost:16686` to look at the trace of that inference.
-
-### batch_nvprof
-
-This example shows how to use nvprof to profile the inference. You need GPU and CUDA to run this example.
-
-```
-  cd example/batch_nvprof
-  go build
-  nvprof --profile-from-start off ./batch_nvprof
-```
-
-Refer to [Profiler User's Guide](https://docs.nvidia.com/cuda/profiler-users-guide/index.html) for using nvprof.
 
 ## Credits
 

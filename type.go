@@ -2,26 +2,14 @@ package pytorch
 
 // #include "cbits/predictor.hpp"
 import "C"
-import "reflect"
+import (
+	"reflect"
+
+	"gorgonia.org/tensor"
+)
 
 // DType tensor scalar data type
 type DType C.Torch_DataType
-
-const (
-	UnknownType DType = C.Torch_Unknown
-	// Byte byte tensors (go type uint8)
-	Byte DType = C.Torch_Byte
-	// Char char tensor (go type int8)
-	Char DType = C.Torch_Char
-	// Int int tensor (go type int32)
-	Int DType = C.Torch_Int
-	// Long long tensor (go type int64)
-	Long DType = C.Torch_Long
-	// Float tensor (go type float32)
-	Float DType = C.Torch_Float
-	// Double tensor  (go type float64)
-	Double DType = C.Torch_Double
-)
 
 var types = []struct {
 	typ      reflect.Type
@@ -29,10 +17,20 @@ var types = []struct {
 }{
 	{reflect.TypeOf(uint8(0)), C.Torch_Byte},
 	{reflect.TypeOf(int8(0)), C.Torch_Char},
-	// {reflect.TypeOf(int16(0)), C.Torch_Short},
+	{reflect.TypeOf(int16(0)), C.Torch_Short},
 	{reflect.TypeOf(int32(0)), C.Torch_Int},
 	{reflect.TypeOf(int64(0)), C.Torch_Long},
+	// Go doesn't have single precision floating point
 	// {reflect.TypeOf(float16(0)), C.Torch_Half},
 	{reflect.TypeOf(float32(0)), C.Torch_Float},
 	{reflect.TypeOf(float64(0)), C.Torch_Double},
+}
+
+func fromType(ten *tensor.Dense) DType {
+	for _, t := range types {
+		if t.typ == ten.Dtype().Type {
+			return DType(t.dataType)
+		}
+	}
+	return C.Torch_Unknown
 }

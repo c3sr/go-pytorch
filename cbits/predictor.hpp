@@ -74,8 +74,6 @@ typedef void* Torch_TensorContext;
 typedef void* Torch_JITModuleContext;
 typedef void* Torch_JITModuleMethodContext;
 
-void InitPytorch();
-
 // Predictor
 
 Torch_PredictorContext Torch_NewPredictor(const char* model_file, Torch_DeviceKind mode);
@@ -113,19 +111,12 @@ Torch_TensorContext Torch_NewTensor(void* data, int64_t* dimensions, int n_dim, 
                                     Torch_DeviceKind device);
 void* Torch_TensorValue(Torch_TensorContext ctx);
 Torch_DataType Torch_TensorType(Torch_TensorContext ctx);
-int64_t* Torch_TensorShape(Torch_TensorContext ctx, size_t* dims);
+int64_t* Torch_TensorShape(Torch_TensorContext ctx, int64_t* dims);
 void Torch_DeleteTensor(Torch_TensorContext ctx);
 
 void Torch_PrintTensors(Torch_TensorContext* tensors, size_t input_size);
 
 // Profile
-void Torch_ProfilingStart(Torch_PredictorContext pred, const char* name, const char* metadata);
-
-void Torch_ProfilingEnd(Torch_PredictorContext pred);
-
-void Torch_ProfilingEnable(Torch_PredictorContext pred);
-
-void Torch_ProfilingDisable(Torch_PredictorContext pred);
 
 char* Torch_ProfilingRead(Torch_PredictorContext pred);
 

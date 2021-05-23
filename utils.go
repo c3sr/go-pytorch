@@ -27,10 +27,10 @@ func getFlattenedLength(data []int64) int {
 }
 
 func tensorCtxToTensor(tensorCtx C.Torch_TensorContext) *tensor.Dense {
-	var shapeLength C.ulong
+	var shapeLength C.int64_t
 	ptr := C.Torch_TensorValue(tensorCtx)
 	cShape := C.Torch_TensorShape(tensorCtx, &shapeLength)
-	ty := DType(C.Torch_TensorType(tensorCtx))
+	ty := C.Torch_TensorType(tensorCtx)
 
 	runtime.KeepAlive(cShape)
 	runtime.KeepAlive(ptr)
@@ -41,21 +41,10 @@ func tensorCtxToTensor(tensorCtx C.Torch_TensorContext) *tensor.Dense {
 	flattenedLength := getFlattenedLength(cShapeSlice)
 
 	switch ty {
-	case Byte:
+	case C.Torch_Byte:
 		{
 			cData := (*[1 << 30]uint8)(unsafe.Pointer(ptr))[:flattenedLength:flattenedLength]
 			data := make([]uint8, flattenedLength)
-			copy(data, cData)
-			return tensor.NewDense(
-				tensor.Byte,
-				shape,
-				tensor.WithBacking(data),
-			)
-		}
-	case Char:
-		{
-			cData := (*[1 << 30]byte)(unsafe.Pointer(ptr))[:flattenedLength:flattenedLength]
-			data := make([]byte, flattenedLength)
 			copy(data, cData)
 			return tensor.NewDense(
 				tensor.Uint8,
@@ -63,29 +52,51 @@ func tensorCtxToTensor(tensorCtx C.Torch_TensorContext) *tensor.Dense {
 				tensor.WithBacking(data),
 			)
 		}
-	case Int:
+	case C.Torch_Char:
 		{
-			cData := (*[1 << 30]int)(unsafe.Pointer(ptr))[:flattenedLength:flattenedLength]
-			data := make([]int, flattenedLength)
+			cData := (*[1 << 30]int8)(unsafe.Pointer(ptr))[:flattenedLength:flattenedLength]
+			data := make([]int8, flattenedLength)
 			copy(data, cData)
 			return tensor.NewDense(
-				tensor.Int,
+				tensor.Int8,
 				shape,
 				tensor.WithBacking(data),
 			)
 		}
-	case Long:
+	case C.Torch_Int:
 		{
-			cData := (*[1 << 30]uint64)(unsafe.Pointer(ptr))[:flattenedLength:flattenedLength]
-			data := make([]uint64, flattenedLength)
+			cData := (*[1 << 30]int32)(unsafe.Pointer(ptr))[:flattenedLength:flattenedLength]
+			data := make([]int32, flattenedLength)
 			copy(data, cData)
 			return tensor.NewDense(
-				tensor.Uint64,
+				tensor.Int32,
 				shape,
 				tensor.WithBacking(data),
 			)
 		}
-	case Float:
+	case C.Torch_Short:
+		{
+			cData := (*[1 << 30]int16)(unsafe.Pointer(ptr))[:flattenedLength:flattenedLength]
+			data := make([]int16, flattenedLength)
+			copy(data, cData)
+			return tensor.NewDense(
+				tensor.Int16,
+				shape,
+				tensor.WithBacking(data),
+			)
+		}
+	case C.Torch_Long:
+		{
+			cData := (*[1 << 30]int64)(unsafe.Pointer(ptr))[:flattenedLength:flattenedLength]
+			data := make([]int64, flattenedLength)
+			copy(data, cData)
+			return tensor.NewDense(
+				tensor.Int64,
+				shape,
+				tensor.WithBacking(data),
+			)
+		}
+	case C.Torch_Float:
 		{
 			cData := (*[1 << 30]float32)(unsafe.Pointer(ptr))[:flattenedLength:flattenedLength]
 			data := make([]float32, flattenedLength)
@@ -96,7 +107,7 @@ func tensorCtxToTensor(tensorCtx C.Torch_TensorContext) *tensor.Dense {
 				tensor.WithBacking(data),
 			)
 		}
-	case Double:
+	case C.Torch_Double:
 		{
 			cData := (*[1 << 30]float64)(unsafe.Pointer(ptr))[:flattenedLength:flattenedLength]
 			data := make([]float64, flattenedLength)
@@ -112,27 +123,11 @@ func tensorCtxToTensor(tensorCtx C.Torch_TensorContext) *tensor.Dense {
 	}
 }
 
-func fromType(ten *tensor.Dense) DType {
-	for _, t := range types {
-		if t.typ == ten.Dtype().Type {
-			return DType(t.dataType)
-		}
-	}
-	return UnknownType
-}
-
 func toTensorCtx(ten *tensor.Dense, device DeviceKind) C.Torch_TensorContext {
 	shape := make([]int64, len(ten.Shape()))
 	for ii, s := range ten.Shape() {
 		shape[ii] = int64(s)
 	}
-
-	// nbytes := ten.Dtype().Size() * uintptr(ten.DataSize())
-	// dataPtr := unsafe.Pointer(C.malloc(C.size_t(nbytes)))
-	// dataSlice := (*[1 << 30]byte)(dataPtr)[:nbytes:nbytes]
-
-	// buf := bytes.NewBuffer(dataSlice[:0:nbytes])
-	// encodeTensor(buf, reflect.ValueOf(ten.Data()), shape)
 
 	return createTensor(ten.Pointer(), shape, fromType(ten), device)
 }
