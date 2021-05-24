@@ -90,6 +90,9 @@ Torch_IValue Torch_ConvertIValueToTorchIValue(torch::IValue value) {
     if (tensor->tensor.is_cuda()) {
       tensor->tensor = tensor->tensor.to(at::kCPU);
     }
+    if (!tensor->tensor.is_contiguous()) {
+      tensor->tensor = tensor->tensor.contiguous();
+    }
     return Torch_IValue{
         .itype = Torch_IValueTypeTensor,
         .data_ptr = tensor,
