@@ -52,6 +52,7 @@ func New(ctx context.Context, opts ...options.Option) (*Predictor, error) {
 		ctx: C.Torch_NewPredictor(
 			cModelFile,
 			C.Torch_DeviceKind(device),
+			C.bool(options.TraceLevel() >= tracer.FRAMEWORK_TRACE),
 		),
 		options: options,
 	}
