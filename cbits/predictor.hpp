@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 
@@ -76,7 +77,7 @@ typedef void* Torch_JITModuleMethodContext;
 
 // Predictor
 
-Torch_PredictorContext Torch_NewPredictor(const char* model_file, Torch_DeviceKind mode);
+Torch_PredictorContext Torch_NewPredictor(const char* model_file, Torch_DeviceKind mode, bool profiling_enabled);
 
 void Torch_PredictorAddInput(Torch_PredictorContext pred, Torch_DataType ty, void* data);
 

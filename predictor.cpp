@@ -25,7 +25,7 @@ extern Torch_IValue Torch_ConvertIValueToTorchIValue(torch::IValue value);
 
 class Predictor {
  public:
-  Predictor(const string &model_file, Torch_DeviceKind device);
+  Predictor(const string &model_file, Torch_DeviceKind device, bool profiling_enabled);
   void Predict(Torch_TensorContext *cInputs, int inputLength);
   torch::jit::script::Module net_;
   torch::IValue output_;
@@ -36,7 +36,7 @@ class Predictor {
   int64_t profile_start_;
 };
 
-Predictor::Predictor(const string &model_file, Torch_DeviceKind device) {
+Predictor::Predictor(const string &model_file, Torch_DeviceKind device, bool profiling_enabled) {
   // Load the network
   net_ = torch::jit::load(model_file);
   if (device == CUDA_DEVICE_KIND) mode_ = torch::kCUDA;
@@ -44,9 +44,9 @@ Predictor::Predictor(const string &model_file, Torch_DeviceKind device) {
   if (mode_ == torch::kCUDA) {
     net_.to(at::kCUDA);
   }
-#ifdef PROFILING_ENABLED
-  profile_enabled_ = true;
-#endif
+
+  profile_enabled_ = profiling_enabled;
+
 }
 
 void Predictor::Predict(Torch_TensorContext *cInputs, int inputLength) {
@@ -77,9 +77,9 @@ void Predictor::Predict(Torch_TensorContext *cInputs, int inputLength) {
   output_ = net_.forward(inputs);
 }
 
-Torch_PredictorContext Torch_NewPredictor(const char *model_file, Torch_DeviceKind mode) {
+Torch_PredictorContext Torch_NewPredictor(const char *model_file, Torch_DeviceKind mode, bool profiling_enabled) {
   HANDLE_TH_ERRORS(Torch_GlobalError);
-  const auto ctx = new Predictor(model_file, mode);
+  const auto ctx = new Predictor(model_file, mode, profiling_enabled);
   return (Torch_PredictorContext)ctx;
   END_HANDLE_TH_ERRORS(Torch_GlobalError, (Torch_PredictorContext)0);
 }
