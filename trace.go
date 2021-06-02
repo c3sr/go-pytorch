@@ -99,6 +99,9 @@ func (t *Trace) Publish(ctx context.Context, lvl tracer.Level, opts ...opentraci
 	sort.Sort(t.TraceEvents)
 	st, ed, idx := int64(-1), int64(-1), 0
 	for _, event := range t.TraceEvents {
+		if event.Name == "forward" {
+			continue
+		}
 		if event.Start >= st && event.End <= ed {
 			continue
 		}
