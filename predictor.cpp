@@ -131,7 +131,7 @@ void Torch_PredictorDelete(Torch_PredictorContext pred) {
   }
 
   if (predictor -> profile_enabled_) {
-    remove("profile.trace");
+    remove((predictor -> profile_filename_).c_str());
   }
 
   delete predictor;
