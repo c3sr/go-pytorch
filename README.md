@@ -15,7 +15,7 @@ The binding requires Pytorch C++ (libtorch) and other Go packages.
 
 The Pytorch C++ library is expected to be under `/opt/libtorch`.
 
-The binding is built using libtorch 1.7.1.
+The binding is built using libtorch 1.8.1.
 
 To install Pytorch C++ on your system, you can
 

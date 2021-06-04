@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"sort"
 	"time"
 
 	"github.com/c3sr/tracer"
@@ -12,17 +11,21 @@ import (
 )
 
 type TraceEvent struct {
-	Name      string    `json:"name,omitempty"`
-	Phase     string    `json:"ph,omitempty"`
-	Timestamp float64   `json:"ts,omitempty"`
-	Duration  float64   `json:"dur,omitempty"`
-	ProcessID string    `json:"pid,omitempty"`
-	ThreadID  int64     `json:"tid,omitempty"`
-	Start     int64     `json:"-"`
-	End       int64     `json:"-"`
-	StartTime time.Time `json:"-"`
-	EndTime   time.Time `json:"-"`
-	Seq       int64     `json:"-"`
+	Name            string    `json:"name,omitempty"`
+	Phase           string    `json:"ph,omitempty"`
+	Timestamp       float64   `json:"ts,omitempty"`
+	Duration        float64   `json:"dur,omitempty"`
+	ProcessID       string    `json:"pid,omitempty"`
+	ThreadID        int64     `json:"tid,omitempty"`
+	Shape           string    `json:"shape,omitempty"`
+	AllocatedMemory int64     `json:"allocated_memory,omitempty"`
+	PeakMemory      int64     `json:"peak_memory,omitempty"`
+	Index           int64     `json:"layer_sequence_index,omitempty"`
+	Start           int64     `json:"-"`
+	End             int64     `json:"-"`
+	StartTime       time.Time `json:"-"`
+	EndTime         time.Time `json:"-"`
+	Seq             int64     `json:"-"`
 }
 
 func (t TraceEvent) ID() string {
@@ -69,12 +72,15 @@ func NewTrace(data string, start_time int64) (*Trace, error) {
 	return trace, nil
 }
 
-func (event *TraceEvent) Publish(ctx context.Context, lvl tracer.Level, idx int, opts ...opentracing.StartSpanOption) error {
+func (event *TraceEvent) Publish(ctx context.Context, lvl tracer.Level, opts ...opentracing.StartSpanOption) error {
 	tags := opentracing.Tags{
 		"phase":                event.Phase,
 		"process_id":           event.ProcessID,
 		"thread_id":            event.ThreadID,
-		"layer_sequence_index": idx,
+		"layer_sequence_index": event.Index,
+		"shape":                event.Shape,
+		"allocated_memory":     event.AllocatedMemory,
+		"peak_memory":          event.PeakMemory,
 	}
 	s, _ := tracer.StartSpanFromContext(
 		ctx,
@@ -96,20 +102,10 @@ func (event *TraceEvent) Publish(ctx context.Context, lvl tracer.Level, idx int,
 }
 
 func (t *Trace) Publish(ctx context.Context, lvl tracer.Level, opts ...opentracing.StartSpanOption) error {
-	sort.Sort(t.TraceEvents)
-	st, ed, idx := int64(-1), int64(-1), 0
 	for _, event := range t.TraceEvents {
-		if event.Name == "forward" {
-			continue
-		}
-		if event.Start >= st && event.End <= ed {
-			continue
-		}
-		st, ed = event.Start, event.End
-		if err := event.Publish(ctx, lvl, idx, opts...); err != nil {
+		if err := event.Publish(ctx, lvl, opts...); err != nil {
 			return err
 		}
-		idx++
 	}
 	return nil
 }

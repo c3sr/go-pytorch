@@ -99,12 +99,13 @@ func (p *Predictor) Predict(ctx context.Context, inputs []tensor.Tensor) error {
 
 	if p.options.TraceLevel() >= tracer.FRAMEWORK_TRACE {
 		defer func() {
-			start_time := int64(C.Torch_ProfilingGetStartTime(p.ctx))
-
 			profBuffer, err := p.ReadProfile()
 			if err != nil {
 				panic(err)
 			}
+
+			start_time := int64(C.Torch_ProfilingGetStartTime(p.ctx))
+
 			t, err := NewTrace(profBuffer, start_time)
 			if err != nil {
 				panic(err)
