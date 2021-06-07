@@ -17,6 +17,7 @@ import (
 	cupti "github.com/c3sr/go-cupti"
 	nvidiasmi "github.com/c3sr/nvidia-smi"
 	"github.com/c3sr/tracer"
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"github.com/unknwon/com"
 	"gorgonia.org/tensor"
@@ -94,7 +95,10 @@ func (p *Predictor) Predict(ctx context.Context, inputs []tensor.Tensor) error {
 		}
 	}()
 
-	predictSpan, ctx := tracer.StartSpanFromContext(ctx, tracer.MODEL_TRACE, "c_predict")
+	predictSpan, ctx := tracer.StartSpanFromContext(ctx, tracer.MODEL_TRACE, "c_predict",
+		opentracing.Tags{
+			"evaluation_trace_level": p.options.TraceLevel(),
+		})
 	defer predictSpan.Finish()
 
 	if p.options.TraceLevel() >= tracer.FRAMEWORK_TRACE {
