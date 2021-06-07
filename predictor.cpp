@@ -235,9 +235,9 @@ char *Torch_ProfilingRead(Torch_PredictorContext pred) {
       if (cnt == 0) {
         continue;
       }
-      cur_mem += evt -> cpuMemoryUsage();
-      if (evt -> cpuMemoryUsage() > 0) {
-        allocated_memory.back() += evt -> cpuMemoryUsage();
+      cur_mem += evt -> cpuMemoryUsage() + evt -> cudaMemoryUsage();
+      if (evt -> cpuMemoryUsage() + evt -> cudaMemoryUsage() > 0) {
+        allocated_memory.back() += evt -> cpuMemoryUsage() + evt -> cudaMemoryUsage();
       }
       if (peak_memory.back() < cur_mem) {
         peak_memory.back() = cur_mem;
